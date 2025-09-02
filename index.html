@@ -87,6 +87,38 @@
       font-size: 20px;
       font-weight: bold;
       color: white;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .site-name-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1f2937;
+      border: 1px solid #444;
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 1001;
+      min-width: 150px;
+      margin-top: 10px;
+    }
+
+    .site-name-dropdown a {
+      padding: 10px 15px;
+      text-decoration: none;
+      color: white;
+      transition: background 0.3s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .site-name-dropdown a:hover {
+      background-color: #374151;
     }
 
     .menu-button {
@@ -427,7 +459,17 @@
 
   <header>
     <div class="logo"><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Logo"></div>
-    <div class="site-name">SKYMALL</div>
+    <div class="site-name" onclick="toggleSiteNameDropdown()">
+      SKYMALL
+      <div class="site-name-dropdown" id="siteNameDropdown">
+        <a href="https://smart-bowling.github.io/PARTS-SKYMALL/">
+          <span class="icon-space"><i class="fas fa-cube"></i></span>ДЕТАЛИ
+        </a>
+        <a href="https://docs.google.com/spreadsheets/d/1ZQUBD4jX7x3BLEMHj0CYSYZrr_2Zjq-_C5pYO8IFPnA/edit?usp=sharing">
+          <span class="icon-space"><i class="fas fa-exclamation-triangle"></i></span>СБОИ PS
+        </a>
+      </div>
+    </div>
     <div class="menu-button" onclick="toggleDropdown()">
       <div></div><div></div><div></div>
     </div>
@@ -487,6 +529,20 @@
       if (window.location.hash) {
         processAuthResponse();
       }
+      
+      // Закрываем выпадающие списки при клике вне их области
+      document.addEventListener('click', function(e) {
+        const siteNameDropdown = document.getElementById('siteNameDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        if (!e.target.closest('.site-name') && siteNameDropdown.style.display === 'block') {
+          siteNameDropdown.style.display = 'none';
+        }
+        
+        if (!e.target.closest('.menu-button') && dropdownMenu.style.display === 'flex') {
+          dropdownMenu.style.display = 'none';
+        }
+      });
     });
 
     function checkAuth() {
@@ -543,9 +599,32 @@
       }
     }
 
+    function toggleSiteNameDropdown() {
+      const dropdown = document.getElementById("siteNameDropdown");
+      dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+      
+      // Закрываем другой выпадающий список, если он открыт
+      const menu = document.getElementById("dropdownMenu");
+      if (menu.style.display === "flex") {
+        menu.style.display = "none";
+      }
+      
+      // Останавливаем всплытие события, чтобы не сработал обработчик document.click
+      event.stopPropagation();
+    }
+
     function toggleDropdown() {
       const menu = document.getElementById("dropdownMenu");
       menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+      
+      // Закрываем другой выпадающий список, если он открыт
+      const dropdown = document.getElementById("siteNameDropdown");
+      if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+      }
+      
+      // Останавливаем всплытие события, чтобы не сработал обработчик document.click
+      event.stopPropagation();
     }
 
     function showLoader() {
