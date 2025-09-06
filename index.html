@@ -103,7 +103,8 @@
       overflow: hidden;
       z-index: 1001;
       min-width: 150px;
-      margin-top: 10px;
+      margin-top: 25px;
+      width: 90%;
     }
 
     .site-name-dropdown a {
@@ -115,6 +116,7 @@
       display: flex;
       align-items: center;
       white-space: nowrap;
+      justify-content: center;
     }
 
     .site-name-dropdown a:hover {
@@ -339,8 +341,11 @@
       align-items: center;
       margin-top: 15px;
       gap: 10px;
-      flex-wrap: wrap;
       user-select: none;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      width: 100%;
+      padding: 5px 0;
     }
 
     .pagination button {
@@ -356,6 +361,8 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .pagination button:hover:not(:disabled) {
@@ -380,7 +387,8 @@
       gap: 6px;
       align-items: center;
       justify-content: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
     }
 
     .page-numbers button {
@@ -404,6 +412,12 @@
     .page-numbers button.active {
       background: linear-gradient(to bottom, #1f2937, #0d1520);
       transform: scale(1.05);
+    }
+
+    .ellipsis {
+      color: #1a2f40;
+      font-weight: 700;
+      padding: 0 5px;
     }
 
     .highlight {
@@ -462,11 +476,8 @@
     <div class="site-name" onclick="toggleSiteNameDropdown()">
       SKYMALL
       <div class="site-name-dropdown" id="siteNameDropdown">
-        <a href="https://smart-bowling.github.io/PARTS-SKYMALL/">
-          <span class="icon-space"><i class="fas fa-cube"></i></span>ДЕТАЛИ
-        </a>
-        <a href="https://docs.google.com/spreadsheets/d/1ZQUBD4jX7x3BLEMHj0CYSYZrr_2Zjq-_C5pYO8IFPnA/edit?usp=sharing">
-          <span class="icon-space"><i class="fas fa-exclamation-triangle"></i></span>СБОИ PS
+        <a href="https://smart-bowling.github.io/SMB-BB/" class="dropdown-button">
+          <span>BLOCKBUSTER</span>
         </a>
       </div>
     </div>
@@ -496,7 +507,7 @@
           <th onclick="startColumnSearch(1)">МАШИНА</th>
           <th onclick="startColumnSearch(2)">ОТКРЫТА</th>
           <th onclick="startColumnSearch(3)">ЗАКРЫТА</th>
-          <th onclick="startColumnSearch(4)">ВЫПОЛНИЛ</th>
+          <th onclick="startColumnSearch(4)">ВЫПоЛНИЛ</th>
           <th onclick="startColumnSearch(5)">ПОЛОМКА</th>
           <th>ОТПРАВИТЬ</th>
         </tr>
@@ -521,16 +532,13 @@
     let activeSearchColumn = null;
     let activeSearchText = "";
 
-    // Проверяем авторизацию при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
       checkAuth();
       
-      // Проверяем параметры URL после возврата с OAuth
       if (window.location.hash) {
         processAuthResponse();
       }
       
-      // Закрываем выпадающие списки при клике вне их области
       document.addEventListener('click', function(e) {
         const siteNameDropdown = document.getElementById('siteNameDropdown');
         const dropdownMenu = document.getElementById('dropdownMenu');
@@ -548,12 +556,10 @@
     function checkAuth() {
       const userEmail = localStorage.getItem('userEmail');
       if (userEmail && allowedEmails.includes(userEmail)) {
-        // Пользователь авторизован
         document.getElementById('login').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
         loadSheetData();
       } else {
-        // Показываем форму входа
         document.getElementById('login').style.display = 'flex';
       }
     }
@@ -564,7 +570,6 @@
       const scope = encodeURIComponent('email profile');
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
       
-      // Открываем окно аутентификации
       window.open(authUrl, 'GoogleAuth', 'width=500,height=600');
     }
 
@@ -576,13 +581,11 @@
       if (accessToken) {
         showLoader();
         
-        // Получаем данные пользователя
         fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken)
           .then(response => response.json())
           .then(data => {
             if (data.email && allowedEmails.includes(data.email)) {
               localStorage.setItem('userEmail', data.email);
-              // Убираем hash из URL
               window.location.href = window.location.origin + window.location.pathname;
             } else {
               alert('Доступ запрещен для: ' + data.email);
@@ -603,13 +606,11 @@
       const dropdown = document.getElementById("siteNameDropdown");
       dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
       
-      // Закрываем другой выпадающий список, если он открыт
       const menu = document.getElementById("dropdownMenu");
       if (menu.style.display === "flex") {
         menu.style.display = "none";
       }
       
-      // Останавливаем всплытие события, чтобы не сработал обработчик document.click
       event.stopPropagation();
     }
 
@@ -617,13 +618,11 @@
       const menu = document.getElementById("dropdownMenu");
       menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
       
-      // Закрываем другой выпадающий список, если он открыт
       const dropdown = document.getElementById("siteNameDropdown");
       if (dropdown.style.display === "block") {
         dropdown.style.display = "none";
       }
       
-      // Останавливаем всплытие события, чтобы не сработал обработчик document.click
       event.stopPropagation();
     }
 
@@ -672,7 +671,7 @@
         if (index !== -1) fullData[index] = updatedRow;
 
         updateOpenTaskCard(fullData);
-        renderPage(currentPage);
+        updateSingleRow(rowNumber, updatedRow);
       } catch (e) {
         alert('Ошибка при обновлении данных');
         console.error(e);
@@ -682,7 +681,9 @@
     }
 
     function renderPage(page) {
+      // Прокручиваем вверх только при перелистывании страниц
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      
       const tableBody = document.getElementById("tableBody");
       tableBody.innerHTML = "";
 
@@ -755,7 +756,73 @@
       }
 
       updateSheet(rowNumber, gSelect.value, iSelect.value);
-      btn.outerHTML = `<span class="sent-text"><i class="fas fa-check-circle"></i>Отправлено</span>`;
+    }
+
+    function updateSingleRow(rowNumber, rowData) {
+      const rows = document.getElementById("tableBody").getElementsByTagName("tr");
+      
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const btn = row.querySelector(`button[id="btn_${rowNumber}"]`);
+        
+        if (btn) {
+          const schemaLink = rowData[2]
+            ? `<a href="${rowData[2]}" target="_blank" class="schema-button">
+                 <i class="fas fa-file-alt"></i>Открыть
+               </a>`
+            : "";
+
+          row.cells[0].innerHTML = rowData[2] ? `
+            <a href="${rowData[2]}" target="_blank" class="schema-button">
+              <i class="fas fa-file-alt"></i>Открыть
+            </a>` : "Нет схемы";
+          
+          row.cells[1].textContent = rowData[1];
+          row.cells[2].textContent = rowData[3];
+          row.cells[3].textContent = rowData[4];
+          
+          if (rowData[6]) {
+            row.cells[4].innerHTML = rowData[6];
+            row.cells[4].id = "";
+          } else {
+            row.cells[4].innerHTML = `
+              <select id="i_${rowData[0]}">
+                <option value="" selected disabled></option>
+                <option value="ЕСТЬ">ЕСТЬ</option>
+                <option value="НЕТ">НЕТ</option>
+              </select>`;
+            row.cells[4].id = `iText_${rowData[0]}`;
+          }
+          
+          if (rowData[5]) {
+            row.cells[5].innerHTML = rowData[5];
+            row.cells[5].id = "";
+          } else {
+            row.cells[5].innerHTML = `
+              <select id="g_${rowData[0]}">
+                <option value="" selected disabled></option>
+                <option value="МЕХАНИК(1)">МЕХаНИК(1)</option>
+                <option value="МЕХАНИК(2)">МЕХаНИК(2)</option>
+              </select>`;
+            row.cells[5].id = `gText_${rowData[0]}`;
+          }
+          
+          const buttonsRow = row.cells[6].querySelector('.buttons-row');
+          buttonsRow.innerHTML = `
+            ${schemaLink}
+            ${rowData[5] && rowData[6]
+              ? `<span class="sent-text"><i class="fas fa-check-circle"></i>Отправлено</span>`
+              : `<button id="btn_${rowData[0]}" onclick="validateAndSend(${rowData[0]});">
+                   <i class="fas fa-paper-plane"></i>Отправить
+                 </button>`}
+          `;
+          
+          break;
+        }
+      }
+      
+      applyHighlight();
+      updateOpenTaskCard(fullData);
     }
 
     function startColumnSearch(columnIndex) {
@@ -791,29 +858,49 @@
       const pageContainer = document.getElementById("pageNumbers");
       pageContainer.innerHTML = "";
       const totalPages = Math.ceil(fullData.length / rowsPerPage);
-      let startPage = Math.max(currentPage - 2, 1);
-      let endPage = Math.min(startPage + 4, totalPages);
-      if (endPage - startPage < 4) {
-        startPage = Math.max(endPage - 4, 1);
+      
+      if (totalPages <= 1) return;
+      
+      addPageButton(1, pageContainer);
+      
+      if (currentPage > 3 && totalPages > 3) {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "ellipsis";
+        ellipsis.textContent = "...";
+        pageContainer.appendChild(ellipsis);
       }
-      for (let i = startPage; i <= endPage; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        if (i === currentPage) btn.classList.add("active");
-        btn.onclick = () => {
-          currentPage = i;
-          renderPage(currentPage);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-        pageContainer.appendChild(btn);
+      
+      if (currentPage > 1 && currentPage < totalPages) {
+        addPageButton(currentPage, pageContainer);
       }
+      
+      if (currentPage < totalPages - 2 && totalPages > 3) {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "ellipsis";
+        ellipsis.textContent = "...";
+        pageContainer.appendChild(ellipsis);
+      }
+      
+      if (totalPages > 1) {
+        addPageButton(totalPages, pageContainer);
+      }
+    }
+
+    function addPageButton(pageNumber, container) {
+      const btn = document.createElement("button");
+      btn.textContent = pageNumber;
+      if (pageNumber === currentPage) btn.classList.add("active");
+      btn.onclick = () => {
+        currentPage = pageNumber;
+        renderPage(currentPage);
+      };
+      container.appendChild(btn);
     }
 
     function prevPage() {
       if (currentPage > 1) {
         currentPage--;
         renderPage(currentPage);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
@@ -821,7 +908,6 @@
       if (currentPage * rowsPerPage < fullData.length) {
         currentPage++;
         renderPage(currentPage);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
