@@ -173,7 +173,19 @@
       font-size: 16px;
     }
 
-   .task-summary-card {
+    /* ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ КАРТОЧЕК - ОДИНАКОВАЯ ШИРИНА КАК У КАРТОЧЕК ЗАДАЧ */
+    .mechanics-rating {
+      background-color: #fff;
+      margin: 80px auto 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 96%;
+      max-width: 500px;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .task-summary-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -182,11 +194,138 @@
       font-weight: 700;
       font-size: 16px;
       padding: 12px 16px;
-      margin: 80px auto 0px;
+      margin: 15px auto;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      width: 84%;
+      width: 96%;
       max-width: 500px;
+      box-sizing: border-box;
+    }
+
+    .winner-section {
+      background-color: #fff;
+      margin: 15px auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 96%;
+      max-width: 500px;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .mechanics-rating h3 {
+      margin: 0 0 12px 0;
+      text-align: center;
+      color: #1a2f40;
+      font-size: 16px;
+      border-bottom: 2px solid #dc143c;
+      padding-bottom: 8px;
+    }
+
+    .winner-section h3 {
+      margin: 0 0 12px 0;
+      text-align: center;
+      color: #1a2f40;
+      font-size: 16px;
+      border-bottom: 2px solid #dc143c;
+      padding-bottom: 8px;
+    }
+
+    .rating-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .rating-item:last-child {
+      border-bottom: none;
+    }
+
+    .winner-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .mechanic-name {
+      font-weight: 600;
+      color: #1a2f40;
+    }
+
+    .winner-name {
+      font-weight: 600;
+      color: #1a2f40;
+    }
+
+    .task-count {
+      background-color: #dc143c;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .winner-count {
+      background-color: #dc143c;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .rating-place {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .winner-place {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .place-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      color: white;
+    }
+
+    .wrench-icon {
+      color: #1a2f40;
+      font-size: 16px;
+    }
+
+    .place-1 {
+      background-color: #ffd700;
+      color: #000;
+    }
+
+    .place-2 {
+      background-color: #c0c0c0;
+    }
+
+    .place-3 {
+      background-color: #cd7f32;
+    }
+
+    .place-other {
+      background-color: #1a2f40;
     }
 
     #app-content {
@@ -222,6 +361,7 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
 
     tbody tr::before {
@@ -502,10 +642,10 @@
   <header>
     <div class="logo"><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Logo"></div>
     <div class="site-name" onclick="toggleSiteNameDropdown()">
-      SKYMALL
+SKYMALL
       <div class="site-name-dropdown" id="siteNameDropdown">
         <a href="https://smart-bowling.github.io/SMB-BB/" class="dropdown-button">
-          <span>BLOCKBUSTER</span>
+          <span>BLOCBUSTER</span>
         </a>
       </div>
     </div>
@@ -516,11 +656,22 @@
       <a href="https://smart-bowling.github.io/PARTS-SKYMALL/">
         <span class="icon-space"><i class="fas fa-cube"></i></span>ДЕТАЛИ
       </a>
-      <a href="https://smart-bowling.github.io/PS-STOP-SKYMALL/">
-        <span class="icon-space"><i class="fas fa-exclamation-triangle"></i></span>STOP LANE
-      </a>
+<a href="https://smart-bowling.github.io/PS-STOP-SKYMALL/">
+  <span class="icon-space"><i class="fas fa-exclamation-triangle"></i></span>STOP LANE
+</a>
     </div>
   </header>
+
+  <!-- КАРТОЧКИ С ОДИНАКОВОЙ ШИРИНОЙ -->
+  <div class="mechanics-rating" id="mechanicsRating" style="display: none;">
+    <h3><i class="fas fa-trophy"></i> Рейтинг механиков за текущий месяц</h3>
+    <div id="ratingContent"></div>
+  </div>
+
+  <div class="winner-section" id="winnerSection" style="display: none;">
+    <h3><i class="fas fa-crown"></i> Победитель прошлого месяца</h3>
+    <div id="winnerContent"></div>
+  </div>
 
   <div class="task-summary-card">
     <div>Открытых задач</div>
@@ -536,7 +687,6 @@
           <th onclick="startColumnSearch(2)">ОТКРЫТА</th>
           <th onclick="startColumnSearch(3)">ЗАКРЫТА</th>
           <th onclick="startColumnSearch(4)">ВЫПоЛНИЛ</th>
-          <th onclick="startColumnSearch(5)">ПОЛОМКА</th>
           <th>ОТПРАВИТЬ</th>
         </tr>
       </thead>
@@ -551,8 +701,15 @@
   </div>
 
   <script>
+    // Принудительное использование HTTPS
+    (function() {
+      if (window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
+        window.location.href = 'https:' + window.location.href.substring(5);
+      }
+    })();
+
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbyB588wg_q1ouNVjuHQzQqM0I096g4VNK_SUs1WcmliKDu5lMhZfklX5JZjodiyZC59qA/exec';
-    const allowedEmails = ["vadiksss900@gmail.com", "sasha380sheyd@gmail.com"];
+    const allowedEmails = ["vadiksss900@gmail.com", "sasha380sheyd@gmail.com", "bowlingblock.b@gmail.com", "glusenkoaleksandr2907@gmail.com"];
 
     let fullData = [];
     let currentPage = 1;
@@ -669,28 +826,159 @@
         const response = await fetch(`${GAS_URL}?action=getData`);
         if (!response.ok) throw new Error('Network response was not ok');
         fullData = await response.json();
+        
+        // Сортируем данные: сначала открытые задачи, затем закрытые
+        fullData.sort((a, b) => {
+          const aIsOpen = !a[5];
+          const bIsOpen = !b[5];
+          
+          if (aIsOpen && !bIsOpen) return -1;
+          if (!aIsOpen && bIsOpen) return 1;
+          return 0;
+        });
+        
         updateOpenTaskCard(fullData);
+        updateMechanicsRating(fullData);
         if (fullData.length === 0) {
-          document.getElementById("tableBody").innerHTML = "<tr><td colspan='7'>Нет задач</td></tr>";
+          document.getElementById("tableBody").innerHTML = "<tr><td colspan='6'>Нет задач</td></tr>";
           return;
         }
         renderPage(currentPage);
       } catch (e) {
-        document.getElementById("tableBody").innerHTML = "<tr><td colspan='7'>Ошибка загрузки данных</td></tr>";
+        document.getElementById("tableBody").innerHTML = "<tr><td colspan='6'>Ошибка загрузки данных</td></tr>";
         console.error(e);
       } finally {
         hideLoader();
       }
     }
 
-    async function updateSheet(rowNumber, doneByValue, breakdownValue) {
+    function updateMechanicsRating(data) {
+      const ratingContainer = document.getElementById('mechanicsRating');
+      const winnerContainer = document.getElementById('winnerSection');
+      const ratingContent = document.getElementById('ratingContent');
+      const winnerContent = document.getElementById('winnerContent');
+      
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
+      
+      // Определяем предыдущий месяц
+      let prevMonth = currentMonth - 1;
+      let prevYear = currentYear;
+      if (prevMonth < 0) {
+        prevMonth = 11;
+        prevYear = currentYear - 1;
+      }
+      
+      const monthNames = [
+        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+      ];
+      
+      // Статистика для текущего месяца
+      const currentMonthStats = {};
+      // Статистика для предыдущего месяца
+      const previousMonthStats = {};
+      
+      // Обрабатываем все данные
+      data.forEach(row => {
+        if (row[4] && row[4].trim() !== '') {
+          try {
+            const dateParts = row[4].split('.');
+            if (dateParts.length === 3) {
+              const day = parseInt(dateParts[0]);
+              const month = parseInt(dateParts[1]) - 1;
+              const year = parseInt(dateParts[2]);
+              
+              const mechanic = row[5];
+              
+              if (mechanic && (mechanic === 'МЕХАНИК(1)' || mechanic === 'МЕХАНИК(2)')) {
+                // Текущий месяц
+                if (month === currentMonth && year === currentYear) {
+                  currentMonthStats[mechanic] = (currentMonthStats[mechanic] || 0) + 1;
+                }
+                // Предыдущий месяц
+                if (month === prevMonth && year === prevYear) {
+                  previousMonthStats[mechanic] = (previousMonthStats[mechanic] || 0) + 1;
+                }
+              }
+            }
+          } catch (e) {
+            console.error('Ошибка парсинга даты:', row[4], e);
+          }
+        }
+      });
+      
+      // ОБНОВЛЯЕМ РЕЙТИНГ ТЕКУЩЕГО МЕСЯЦА
+      const currentMonthArray = Object.entries(currentMonthStats).map(([name, count]) => ({
+        name,
+        count
+      }));
+      
+      currentMonthArray.sort((a, b) => b.count - a.count);
+      
+      if (currentMonthArray.length > 0) {
+        ratingContainer.style.display = 'block';
+        ratingContent.innerHTML = '';
+        
+        currentMonthArray.forEach((mechanic, index) => {
+          const place = index + 1;
+          const ratingItem = document.createElement('div');
+          ratingItem.className = 'rating-item';
+          
+          let placeClass = 'place-other';
+          if (place === 1) placeClass = 'place-1';
+          else if (place === 2) placeClass = 'place-2';
+          else if (place === 3) placeClass = 'place-3';
+          
+          ratingItem.innerHTML = `
+            <div class="rating-place">
+              <div class="place-badge ${placeClass}">${place}</div>
+              <span class="mechanic-name">${mechanic.name}</span>
+            </div>
+            <div class="task-count">${mechanic.count}</div>
+          `;
+          
+          ratingContent.appendChild(ratingItem);
+        });
+      } else {
+        ratingContainer.style.display = 'block';
+        ratingContent.innerHTML = `<div style="text-align: center; color: #666; padding: 20px;">Нет данных за ${monthNames[currentMonth]}</div>`;
+      }
+      
+      // ОБНОВЛЯЕМ ПОБЕДИТЕЛЯ ПРЕДЫДУЩЕГО МЕСЯЦА
+      const previousMonthArray = Object.entries(previousMonthStats).map(([name, count]) => ({
+        name,
+        count
+      }));
+      
+      previousMonthArray.sort((a, b) => b.count - a.count);
+      
+      if (previousMonthArray.length > 0 && previousMonthArray[0].count > 0) {
+        winnerContainer.style.display = 'block';
+        const winner = previousMonthArray[0];
+        winnerContent.innerHTML = `
+          <div class="winner-item">
+            <div class="winner-place">
+              <i class="fas fa-wrench wrench-icon"></i>
+              <span class="winner-name">${winner.name}</span>
+            </div>
+            <div class="winner-count">${winner.count}</div>
+          </div>
+        `;
+      } else {
+        winnerContainer.style.display = 'block';
+        winnerContent.innerHTML = `<div style="text-align: center; color: #666; padding: 8px 0;">Нет данных за ${monthNames[prevMonth]}</div>`;
+      }
+    }
+
+    async function updateSheet(rowNumber, doneByValue) {
       showLoader();
       try {
         const params = new URLSearchParams({
           action: 'update',
           rowNumber,
-          doneByValue,
-          breakdownValue
+          doneByValue
         });
         const response = await fetch(`${GAS_URL}?${params.toString()}`);
         if (!response.ok) throw new Error('Network response was not ok');
@@ -699,19 +987,34 @@
         const index = fullData.findIndex(row => row[0] === rowNumber);
         if (index !== -1) fullData[index] = updatedRow;
 
+        // После обновления снова сортируем данные
+        fullData.sort((a, b) => {
+          const aIsOpen = !a[5];
+          const bIsOpen = !b[5];
+          
+          if (aIsOpen && !bIsOpen) return -1;
+          if (!aIsOpen && bIsOpen) return 1;
+          return 0;
+        });
+
         updateOpenTaskCard(fullData);
-        updateSingleRow(rowNumber, updatedRow);
+        updateMechanicsRating(fullData);
+        renderPage(currentPage, false);
+        
+        return Promise.resolve();
       } catch (e) {
         alert('Ошибка при обновлении данных');
         console.error(e);
+        return Promise.reject(e);
       } finally {
         hideLoader();
       }
     }
 
-    function renderPage(page) {
-      // Прокручиваем вверх только при перелистывании страниц
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function renderPage(page, scrollToTop = true) {
+      if (scrollToTop) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       
       const tableBody = document.getElementById("tableBody");
       tableBody.innerHTML = "";
@@ -737,15 +1040,6 @@
           <td data-label="МАШИНА">${row[1]}</td>
           <td data-label="ОТКРЫТА">${row[3]}</td>
           <td data-label="ЗАКРЫТА">${row[4]}</td>
-          ${row[6]
-            ? `<td data-label="ПОЛОМКА">${row[6]}</td>`
-            : `<td data-label="ПОЛОМКА" id="iText_${row[0]}">
-                <select id="i_${row[0]}">
-                  <option value="" selected disabled></option>
-                  <option value="ЕСТЬ">ЕСТЬ</option>
-                  <option value="НЕТ">НЕТ</option>
-                </select>
-              </td>`}
           ${row[5]
             ? `<td data-label="ВЫПОЛНИЛ">${row[5]}</td>`
             : `<td data-label="ВЫПОЛНИЛ" id="gText_${row[0]}">
@@ -758,7 +1052,7 @@
           <td data-label="ОТПРАВИТЬ">
             <div class="buttons-row">
               ${schemaLink}
-              ${row[5] && row[6]
+              ${row[5]
                 ? `<span class="sent-text"><i class="fas fa-check-circle"></i>Отправлено</span>`
                 : `<button id="btn_${row[0]}" onclick="validateAndSend(${row[0]});">
                      <i class="fas fa-paper-plane"></i>Отправить
@@ -768,8 +1062,8 @@
         
         // Добавляем обработчик клика на строку
         tr.addEventListener('click', function(e) {
-          // Не выделяем строку, если клик был по ссылке, кнопке или селекту
-          if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') {
+          // Не выделяем строку, если клик был по кнопке или селекту
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') {
             return;
           }
           
@@ -783,6 +1077,27 @@
           selectedRow = this;
         });
         
+        // Добавляем обработчик клика на кнопку "Открыть"
+        const openButton = tr.querySelector('.schema-button');
+        if (openButton) {
+          openButton.addEventListener('click', function(e) {
+            // Снимаем выделение с предыдущей строки
+            if (selectedRow) {
+              selectedRow.classList.remove('selected');
+            }
+            
+            // Выделяем текущую строку
+            tr.classList.add('selected');
+            selectedRow = tr;
+            
+            // Открываем ссылку в новой вкладке
+            window.open(this.href, '_blank');
+            
+            // Отменяем стандартное поведение, чтобы не открывать ссылку дважды
+            e.preventDefault();
+          });
+        }
+        
         tableBody.appendChild(tr);
       });
 
@@ -794,15 +1109,20 @@
 
     function validateAndSend(rowNumber) {
       const gSelect = document.getElementById(`g_${rowNumber}`);
-      const iSelect = document.getElementById(`i_${rowNumber}`);
       const btn = document.getElementById(`btn_${rowNumber}`);
 
-      if (!gSelect || !iSelect || !gSelect.value || !iSelect.value) {
+      if (!gSelect || !gSelect.value) {
         alert("Заполните все формы!");
         return;
       }
 
-      updateSheet(rowNumber, gSelect.value, iSelect.value);
+      // Сохраняем текущую позицию прокрутки
+      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+      
+      updateSheet(rowNumber, gSelect.value).then(() => {
+        // Восстанавливаем позицию прокрутки после обновления
+        window.scrollTo(0, scrollPosition);
+      });
     }
 
     function updateSingleRow(rowNumber, rowData) {
@@ -828,36 +1148,23 @@
           row.cells[2].textContent = rowData[3];
           row.cells[3].textContent = rowData[4];
           
-          if (rowData[6]) {
-            row.cells[4].innerHTML = rowData[6];
+          if (rowData[5]) {
+            row.cells[4].innerHTML = rowData[5];
             row.cells[4].id = "";
           } else {
             row.cells[4].innerHTML = `
-              <select id="i_${rowData[0]}">
-                <option value="" selected disabled></option>
-                <option value="ЕСТЬ">ЕСТЬ</option>
-                <option value="НЕТ">НЕТ</option>
-              </select>`;
-            row.cells[4].id = `iText_${rowData[0]}`;
-          }
-          
-          if (rowData[5]) {
-            row.cells[5].innerHTML = rowData[5];
-            row.cells[5].id = "";
-          } else {
-            row.cells[5].innerHTML = `
               <select id="g_${rowData[0]}">
                 <option value="" selected disabled></option>
-                <option value="МЕХАНИК(1)">МЕХаНИК(1)</option>
-                <option value="МЕХАНИК(2)">МЕХаНИК(2)</option>
+                <option value="МЕХАНИК(1)">МЕХАНИК(1)</option>
+                <option value="МЕХАНИК(2)">МЕХАНИК(2)</option>
               </select>`;
-            row.cells[5].id = `gText_${rowData[0]}`;
+            row.cells[4].id = `gText_${rowData[0]}`;
           }
           
-          const buttonsRow = row.cells[6].querySelector('.buttons-row');
+          const buttonsRow = row.cells[5].querySelector('.buttons-row');
           buttonsRow.innerHTML = `
             ${schemaLink}
-            ${rowData[5] && rowData[6]
+            ${rowData[5]
               ? `<span class="sent-text"><i class="fas fa-check-circle"></i>Отправлено</span>`
               : `<button id="btn_${rowData[0]}" onclick="validateAndSend(${rowData[0]});">
                    <i class="fas fa-paper-plane"></i>Отправить
@@ -870,6 +1177,7 @@
       
       applyHighlight();
       updateOpenTaskCard(fullData);
+      updateMechanicsRating(fullData);
     }
 
     function startColumnSearch(columnIndex) {
@@ -939,7 +1247,7 @@
       if (pageNumber === currentPage) btn.classList.add("active");
       btn.onclick = () => {
         currentPage = pageNumber;
-        renderPage(currentPage);
+        renderPage(currentPage, true);
       };
       container.appendChild(btn);
     }
@@ -947,19 +1255,19 @@
     function prevPage() {
       if (currentPage > 1) {
         currentPage--;
-        renderPage(currentPage);
+        renderPage(currentPage, true);
       }
     }
 
     function nextPage() {
       if (currentPage * rowsPerPage < fullData.length) {
         currentPage++;
-        renderPage(currentPage);
+        renderPage(currentPage, true);
       }
     }
 
     function updateOpenTaskCard(data) {
-      const openCount = data.filter(row => !row[5] || !row[6]).length;
+      const openCount = data.filter(row => !row[5]).length;
       document.getElementById("openTaskCount").textContent = openCount;
     }
   </script>
