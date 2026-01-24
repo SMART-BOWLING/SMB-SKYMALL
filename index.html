@@ -4,6 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SMB SKYMALL</title>
+  
+  <!-- ===================== ССЫЛКИ ДЛЯ УДОБНОГО ИЗМЕНЕНИЯ ===================== -->
+  <script>
+    // ============== ССЫЛКИ НА ИКОНКИ И ШРИФТЫ ==============
+    const LINKS = {
+      // Иконка сайта (favicon)
+      FAVICON: "https://i.postimg.cc/dtSpKx0W/1.png",
+      
+      // Логотип в шапке
+      LOGO: "https://i.postimg.cc/wjGzSY92/1.png",
+      
+      // Шрифты
+      FONT_AWESOME: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+      GOOGLE_FONT: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap",
+      
+      // ============== ССЫЛКИ НА ПРОЕКТЫ В ВЫПАДАЮЩЕМ МЕНЮ ==============
+      PROJECTS: {
+        // Проекты в основном выпадающем меню (Site Name Dropdown)
+        SKYMALL: {
+          NAME: "BLOCKBUSTER",
+          URL: "https://smart-bowling.github.io/SMB-BB/"
+        },
+        LUCKY_STRIKE_KH: {
+          NAME: "LUCKY STRIKE KH",
+          URL: "https://smart-bowling.github.io/SMB-LS-KH/"
+        }
+      },
+      
+      // ============== ССЫЛКИ В МЕНЮ (Dropdown Menu) ==============
+      MENU_LINKS: [
+        {
+          NAME: "ДЕТАЛИ",
+          URL: "https://smart-bowling.github.io/PARTS-SKYMALL/",
+          ICON: "fas fa-cube"
+        },
+        {
+          NAME: "STOP LANE",
+          URL: "https://smart-bowling.github.io/PS-STOP-SKYMALL/",
+          ICON: "fas fa-exclamation-triangle"
+        }
+      ],
+      
+      // ============== API И АУТЕНТИФИКАЦИЯ ==============
+      GAS_URL: "https://script.google.com/macros/s/AKfycbyB588wg_q1ouNVjuHQzQqM0I096g4VNK_SUs1WcmliKDu5lMhZfklX5JZjodiyZC59qA/exec",
+      GOOGLE_CLIENT_ID: "328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com",
+      
+      // ============== РАЗРЕШЕННЫЕ EMAIL ==============
+      ALLOWED_EMAILS: ["vadiksss900@gmail.com", "mesacevda1986@gmail.com", "bowlingblock.b@gmail.com", "glusg"]
+    };
+  </script>
+  <!-- ===================== КОНЕЦ ССЫЛОК ===================== -->
+  
   <link rel="icon" type="image/png" href="https://i.postimg.cc/dtSpKx0W/1.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -173,16 +225,58 @@
       font-size: 16px;
     }
 
+    /* Кнопка РЕЙТИНГ */
+    .rating-button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1a2f40;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 12px 16px;
+      margin: 80px auto 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 96%;
+      max-width: 500px;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .rating-button:hover {
+      background-color: #2a3648;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .rating-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .rating-button i {
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .rating-button.expanded i {
+      transform: rotate(180deg);
+    }
+
     /* ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ КАРТОЧЕК - ОДИНАКОВАЯ ШИРИНА КАК У КАРТОЧЕК ЗАДАЧ */
     .mechanics-rating {
       background-color: #fff;
-      margin: 80px auto 15px;
+      margin: 15px auto;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       width: 96%;
       max-width: 500px;
       padding: 15px;
       box-sizing: border-box;
+      display: none; /* Скрыто по умолчанию */
     }
 
     .task-summary-card {
@@ -211,6 +305,7 @@
       max-width: 500px;
       padding: 15px;
       box-sizing: border-box;
+      display: none; /* Скрыто по умолчанию */
     }
 
     .mechanics-rating h3 {
@@ -380,6 +475,7 @@
     tbody tr.selected {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0,0,0,0.15), 0 0 0 2px #dc143c;
+      margin-bottom: 60px; /* Дополнительное место для кнопок */
     }
 
     tbody tr.selected::before {
@@ -625,6 +721,90 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Стили для кнопок фильтрации под карточкой */
+    .card-filter-buttons {
+      display: none;
+      width: 100%;
+      gap: 10px;
+      margin-top: 10px;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      z-index: 2;
+    }
+
+    .card-filter-button {
+      flex: 1;
+      padding: 8px 10px;
+      background-color: #1a2f40;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      text-align: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card-filter-button:hover {
+      background-color: #2a3648;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+
+    .card-filter-button:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Контейнер для карточки с относительным позиционированием */
+    .card-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    /* Убираем нижний отступ у последней ячейки, чтобы было место для кнопок */
+    tbody tr > td:last-child {
+      padding-bottom: 0;
+    }
+
+    /* Добавляем место для кнопок под карточкой */
+    tbody tr.selected {
+      margin-bottom: 60px;
+    }
+
+    /* Стиль для кнопки "Показать все задачи" */
+    .show-all-button {
+      display: none;
+      width: 96%;
+      max-width: 500px;
+      margin: 10px auto;
+      padding: 10px 15px;
+      background-color: #1a2f40;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      text-align: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .show-all-button:hover {
+      background-color: #2a3648;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .show-all-button:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
@@ -644,31 +824,30 @@
     <div class="site-name" onclick="toggleSiteNameDropdown()">
 SKYMALL
       <div class="site-name-dropdown" id="siteNameDropdown">
-        <a href="https://smart-bowling.github.io/SMB-BB/" class="dropdown-button">
-          <span>BLOCBUSTER</span>
-        </a>
+        <!-- Проекты будут добавлены через JavaScript -->
       </div>
     </div>
     <div class="menu-button" onclick="toggleDropdown()">
       <div></div><div></div><div></div>
     </div>
     <div class="dropdown" id="dropdownMenu">
-      <a href="https://smart-bowling.github.io/PARTS-SKYMALL/">
-        <span class="icon-space"><i class="fas fa-cube"></i></span>ДЕТАЛИ
-      </a>
-<a href="https://smart-bowling.github.io/PS-STOP-SKYMALL/">
-  <span class="icon-space"><i class="fas fa-exclamation-triangle"></i></span>STOP LANE
-</a>
+      <!-- Меню будет добавлено через JavaScript -->
     </div>
   </header>
 
+  <!-- Кнопка РЕЙТИНГ -->
+  <div class="rating-button" id="ratingButton" onclick="toggleRating()" style="display: none;">
+    <div>РЕЙТИНГ</div>
+    <div><i class="fas fa-chevron-down"></i></div>
+  </div>
+
   <!-- КАРТОЧКИ С ОДИНАКОВОЙ ШИРИНОЙ -->
-  <div class="mechanics-rating" id="mechanicsRating" style="display: none;">
+  <div class="mechanics-rating" id="mechanicsRating">
     <h3><i class="fas fa-trophy"></i> Рейтинг механиков за текущий месяц</h3>
     <div id="ratingContent"></div>
   </div>
 
-  <div class="winner-section" id="winnerSection" style="display: none;">
+  <div class="winner-section" id="winnerSection">
     <h3><i class="fas fa-crown"></i> Победитель прошлого месяца</h3>
     <div id="winnerContent"></div>
   </div>
@@ -677,6 +856,11 @@ SKYMALL
     <div>Открытых задач</div>
     <div id="openTaskCount">0</div>
   </div>
+
+  <!-- Кнопка "Показать все задачи" -->
+  <button class="show-all-button" id="showAllButton" onclick="showAllTasks()" style="display: none;">
+    Показать все задачи
+  </button>
 
   <div id="app-content" style="display:none;">
     <table>
@@ -701,6 +885,45 @@ SKYMALL
   </div>
 
   <script>
+    // ===================== ИСПОЛЬЗОВАНИЕ ССЫЛОК ИЗ КОНСТАНТ =====================
+    // Обновляем ссылки на основе констант
+    document.querySelector('link[rel="icon"]').href = LINKS.FAVICON;
+    document.querySelector('.logo img').src = LINKS.LOGO;
+
+    // Заполняем выпадающее меню проектами
+    function populateProjectsDropdown() {
+      const siteNameDropdown = document.getElementById('siteNameDropdown');
+      siteNameDropdown.innerHTML = '';
+      
+      // Добавляем проекты
+      for (const key in LINKS.PROJECTS) {
+        const project = LINKS.PROJECTS[key];
+        const link = document.createElement('a');
+        link.href = project.URL;
+        link.className = 'dropdown-button';
+        link.innerHTML = `<span>${project.NAME}</span>`;
+        siteNameDropdown.appendChild(link);
+      }
+    }
+
+    // Заполняем меню ссылками
+    function populateMenuLinks() {
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      dropdownMenu.innerHTML = '';
+      
+      // Добавляем ссылки из меню
+      LINKS.MENU_LINKS.forEach(link => {
+        const menuItem = document.createElement('a');
+        menuItem.href = link.URL;
+        menuItem.innerHTML = `
+          <span class="icon-space"><i class="${link.ICON}"></i></span>${link.NAME}
+        `;
+        dropdownMenu.appendChild(menuItem);
+      });
+    }
+
+    // ===================== ОСНОВНОЙ КОД =====================
+    
     // Принудительное использование HTTPS
     (function() {
       if (window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
@@ -708,17 +931,27 @@ SKYMALL
       }
     })();
 
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyB588wg_q1ouNVjuHQzQqM0I096g4VNK_SUs1WcmliKDu5lMhZfklX5JZjodiyZC59qA/exec';
-    const allowedEmails = ["vadiksss900@gmail.com", "mesacevda1986@gmail.com", "bowlingblock.b@gmail.com", "glusg"];
+    const GAS_URL = LINKS.GAS_URL;
+    const allowedEmails = LINKS.ALLOWED_EMAILS;
 
     let fullData = [];
+    let filteredData = [];
+    let isFiltered = false;
+    let currentFilterType = null;
+    let currentFilterValue = null;
     let currentPage = 1;
     const rowsPerPage = 20;
     let activeSearchColumn = null;
     let activeSearchText = "";
-    let selectedRow = null;
+    let selectedRowId = null;
+    let selectedRowData = null;
+    let isRatingVisible = false;
 
     document.addEventListener('DOMContentLoaded', function() {
+      // Заполняем меню
+      populateProjectsDropdown();
+      populateMenuLinks();
+      
       checkAuth();
       
       if (window.location.hash) {
@@ -744,6 +977,7 @@ SKYMALL
       if (userEmail && allowedEmails.includes(userEmail)) {
         document.getElementById('login').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
+        document.getElementById('ratingButton').style.display = 'flex';
         loadSheetData();
       } else {
         document.getElementById('login').style.display = 'flex';
@@ -751,7 +985,7 @@ SKYMALL
     }
 
     function googleAuth() {
-      const clientId = '328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com';
+      const clientId = LINKS.GOOGLE_CLIENT_ID;
       const redirectUri = encodeURIComponent(window.location.origin + window.location.pathname);
       const scope = encodeURIComponent('email profile');
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
@@ -852,9 +1086,25 @@ SKYMALL
       }
     }
 
+    function toggleRating() {
+      const ratingButton = document.getElementById('ratingButton');
+      const mechanicsRating = document.getElementById('mechanicsRating');
+      const winnerSection = document.getElementById('winnerSection');
+      
+      isRatingVisible = !isRatingVisible;
+      
+      if (isRatingVisible) {
+        ratingButton.classList.add('expanded');
+        mechanicsRating.style.display = 'block';
+        winnerSection.style.display = 'block';
+      } else {
+        ratingButton.classList.remove('expanded');
+        mechanicsRating.style.display = 'none';
+        winnerSection.style.display = 'none';
+      }
+    }
+
     function updateMechanicsRating(data) {
-      const ratingContainer = document.getElementById('mechanicsRating');
-      const winnerContainer = document.getElementById('winnerSection');
       const ratingContent = document.getElementById('ratingContent');
       const winnerContent = document.getElementById('winnerContent');
       
@@ -918,7 +1168,6 @@ SKYMALL
       currentMonthArray.sort((a, b) => b.count - a.count);
       
       if (currentMonthArray.length > 0) {
-        ratingContainer.style.display = 'block';
         ratingContent.innerHTML = '';
         
         currentMonthArray.forEach((mechanic, index) => {
@@ -942,7 +1191,6 @@ SKYMALL
           ratingContent.appendChild(ratingItem);
         });
       } else {
-        ratingContainer.style.display = 'block';
         ratingContent.innerHTML = `<div style="text-align: center; color: #666; padding: 20px;">Нет данных за ${monthNames[currentMonth]}</div>`;
       }
       
@@ -955,7 +1203,6 @@ SKYMALL
       previousMonthArray.sort((a, b) => b.count - a.count);
       
       if (previousMonthArray.length > 0 && previousMonthArray[0].count > 0) {
-        winnerContainer.style.display = 'block';
         const winner = previousMonthArray[0];
         winnerContent.innerHTML = `
           <div class="winner-item">
@@ -967,7 +1214,6 @@ SKYMALL
           </div>
         `;
       } else {
-        winnerContainer.style.display = 'block';
         winnerContent.innerHTML = `<div style="text-align: center; color: #666; padding: 8px 0;">Нет данных за ${monthNames[prevMonth]}</div>`;
       }
     }
@@ -997,9 +1243,27 @@ SKYMALL
           return 0;
         });
 
+        // Обновляем отфильтрованные данные, если они активны
+        if (isFiltered) {
+          if (currentFilterType === 'machine') {
+            filteredData = fullData.filter(row => 
+              row[1] === currentFilterValue && !row[5]
+            );
+          } else if (currentFilterType === 'task') {
+            filteredData = fullData.filter(row => 
+              row[2] === currentFilterValue && !row[5]
+            );
+          }
+        }
+
         updateOpenTaskCard(fullData);
         updateMechanicsRating(fullData);
-        renderPage(currentPage, false);
+        
+        if (isFiltered) {
+          renderFilteredPage(currentPage);
+        } else {
+          renderPage(currentPage, false);
+        }
         
         return Promise.resolve();
       } catch (e) {
@@ -1021,10 +1285,30 @@ SKYMALL
 
       const start = (page - 1) * rowsPerPage;
       const end = start + rowsPerPage;
-      const pageData = fullData.slice(start, end);
+      const pageData = isFiltered ? filteredData.slice(start, end) : fullData.slice(start, end);
 
-      pageData.forEach((row) => {
+      pageData.forEach((row, index) => {
+        // Создаем контейнер для карточки
+        const cardContainer = document.createElement("div");
+        cardContainer.className = "card-container";
+        cardContainer.id = `card-container-${row[0]}`;
+        
+        // Создаем кнопки фильтрации
+        const filterButtons = document.createElement("div");
+        filterButtons.className = "card-filter-buttons";
+        filterButtons.id = `filter-buttons-${row[0]}`;
+        filterButtons.innerHTML = `
+          <button class="card-filter-button" onclick="filterByMachineFromCard(${row[0]})">
+            Задачи с этой машиной
+          </button>
+          <button class="card-filter-button" onclick="filterByTaskFromCard(${row[0]})">
+            Машины с этой задачей
+          </button>
+        `;
+        
+        // Создаем карточку (строку таблицы)
         const tr = document.createElement("tr");
+        tr.id = `card-${row[0]}`;
         const schemaLink = row[2]
           ? `<a href="${row[2]}" target="_blank" class="schema-button">
                <i class="fas fa-file-alt"></i>Открыть
@@ -1060,35 +1344,81 @@ SKYMALL
             </div>
           </td>`;
         
-        // Добавляем обработчик клика на строку
+        // Собираем все вместе
+        cardContainer.appendChild(tr);
+        cardContainer.appendChild(filterButtons);
+        
+        // Добавляем обработчик клика на карточку
         tr.addEventListener('click', function(e) {
-          // Не выделяем строку, если клик был по кнопке или селекту
-          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') {
+          // Не обрабатываем клик по кнопкам или селектам
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT' || e.target.closest('button')) {
             return;
           }
           
-          // Снимаем выделение с предыдущей строки
-          if (selectedRow) {
-            selectedRow.classList.remove('selected');
+          const rowId = row[0];
+          
+          // Если кликаем на уже выбранную карточку - скрываем кнопки и снимаем выделение
+          if (selectedRowId === rowId) {
+            hideCardButtons(rowId);
+            selectedRowId = null;
+            selectedRowData = null;
+            tr.classList.remove('selected');
+            return;
           }
           
-          // Выделяем текущую строку
-          this.classList.add('selected');
-          selectedRow = this;
+          // Скрываем кнопки у предыдущей выбранной карточки
+          if (selectedRowId) {
+            hideCardButtons(selectedRowId);
+            const prevCard = document.getElementById(`card-${selectedRowId}`);
+            if (prevCard) prevCard.classList.remove('selected');
+          }
+          
+          // Сохраняем данные выбранной строки
+          selectedRowData = row;
+          selectedRowId = rowId;
+          
+          // Показываем кнопки у текущей карточки
+          showCardButtons(rowId);
+          
+          // Выделяем карточку
+          tr.classList.add('selected');
         });
         
         // Добавляем обработчик клика на кнопку "Открыть"
         const openButton = tr.querySelector('.schema-button');
         if (openButton) {
           openButton.addEventListener('click', function(e) {
-            // Снимаем выделение с предыдущей строки
-            if (selectedRow) {
-              selectedRow.classList.remove('selected');
+            const rowId = row[0];
+            
+            // Если кликаем на уже выбранную карточку - скрываем кнопки и снимаем выделение
+            if (selectedRowId === rowId) {
+              hideCardButtons(rowId);
+              selectedRowId = null;
+              selectedRowData = null;
+              tr.classList.remove('selected');
+              
+              // Открываем ссылку в новой вкладке
+              window.open(this.href, '_blank');
+              e.preventDefault();
+              return;
             }
             
-            // Выделяем текущую строку
+            // Скрываем кнопки у предыдущей выбранной карточки
+            if (selectedRowId) {
+              hideCardButtons(selectedRowId);
+              const prevCard = document.getElementById(`card-${selectedRowId}`);
+              if (prevCard) prevCard.classList.remove('selected');
+            }
+            
+            // Сохраняем данные выбранной строки
+            selectedRowData = row;
+            selectedRowId = rowId;
+            
+            // Показываем кнопки у текущей карточки
+            showCardButtons(rowId);
+            
+            // Выделяем карточку
             tr.classList.add('selected');
-            selectedRow = tr;
             
             // Открываем ссылку в новой вкладке
             window.open(this.href, '_blank');
@@ -1098,13 +1428,49 @@ SKYMALL
           });
         }
         
-        tableBody.appendChild(tr);
+        // Добавляем карточку в таблицу
+        tableBody.appendChild(cardContainer);
       });
 
       applyHighlight();
       renderPageNumbers();
-      document.getElementById("prevBtn").disabled = currentPage === 1;
-      document.getElementById("nextBtn").disabled = currentPage * rowsPerPage >= fullData.length;
+      
+      if (isFiltered) {
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = currentPage * rowsPerPage >= filteredData.length;
+        // Показываем кнопку "Показать все задачи"
+        document.getElementById('showAllButton').style.display = 'block';
+      } else {
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = currentPage * rowsPerPage >= fullData.length;
+        // Скрываем кнопку "Показать все задачи"
+        document.getElementById('showAllButton').style.display = 'none';
+      }
+    }
+
+    function showCardButtons(rowId) {
+      const filterButtons = document.getElementById(`filter-buttons-${rowId}`);
+      if (filterButtons) {
+        filterButtons.style.display = 'flex';
+      }
+    }
+
+    function hideCardButtons(rowId) {
+      const filterButtons = document.getElementById(`filter-buttons-${rowId}`);
+      if (filterButtons) {
+        filterButtons.style.display = 'none';
+      }
+    }
+
+    function renderFilteredPage(page) {
+      const dataToUse = isFiltered ? filteredData : fullData;
+      const totalPages = Math.ceil(dataToUse.length / rowsPerPage);
+      
+      if (page > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+      }
+      
+      renderPage(currentPage, true);
     }
 
     function validateAndSend(rowNumber) {
@@ -1212,7 +1578,8 @@ SKYMALL
     function renderPageNumbers() {
       const pageContainer = document.getElementById("pageNumbers");
       pageContainer.innerHTML = "";
-      const totalPages = Math.ceil(fullData.length / rowsPerPage);
+      const dataToUse = isFiltered ? filteredData : fullData;
+      const totalPages = Math.ceil(dataToUse.length / rowsPerPage);
       
       if (totalPages <= 1) return;
       
@@ -1247,7 +1614,11 @@ SKYMALL
       if (pageNumber === currentPage) btn.classList.add("active");
       btn.onclick = () => {
         currentPage = pageNumber;
-        renderPage(currentPage, true);
+        if (isFiltered) {
+          renderFilteredPage(currentPage);
+        } else {
+          renderPage(currentPage, true);
+        }
       };
       container.appendChild(btn);
     }
@@ -1255,20 +1626,94 @@ SKYMALL
     function prevPage() {
       if (currentPage > 1) {
         currentPage--;
-        renderPage(currentPage, true);
+        if (isFiltered) {
+          renderFilteredPage(currentPage);
+        } else {
+          renderPage(currentPage, true);
+        }
       }
     }
 
     function nextPage() {
-      if (currentPage * rowsPerPage < fullData.length) {
+      const dataToUse = isFiltered ? filteredData : fullData;
+      if (currentPage * rowsPerPage < dataToUse.length) {
         currentPage++;
-        renderPage(currentPage, true);
+        if (isFiltered) {
+          renderFilteredPage(currentPage);
+        } else {
+          renderPage(currentPage, true);
+        }
       }
     }
 
     function updateOpenTaskCard(data) {
       const openCount = data.filter(row => !row[5]).length;
       document.getElementById("openTaskCount").textContent = openCount;
+    }
+
+    // Функции для работы с фильтрацией из карточек
+    function filterByMachineFromCard(rowNumber) {
+      const row = fullData.find(r => r[0] === rowNumber);
+      if (!row) return;
+      
+      const machineName = row[1];
+      currentFilterType = 'machine';
+      currentFilterValue = machineName;
+      
+      // Фильтруем только невыполненные задачи с этой машиной
+      filteredData = fullData.filter(row => 
+        row[1] === machineName && !row[5]
+      );
+      
+      isFiltered = true;
+      currentPage = 1;
+      renderFilteredPage(currentPage);
+      
+      // Показываем кнопку "Показать все задачи"
+      document.getElementById('showAllButton').style.display = 'block';
+    }
+
+    function filterByTaskFromCard(rowNumber) {
+      const row = fullData.find(r => r[0] === rowNumber);
+      if (!row) return;
+      
+      const taskName = row[2];
+      currentFilterType = 'task';
+      currentFilterValue = taskName;
+      
+      // Фильтруем только невыполненные задачи с этой задачей (по всем машинам)
+      filteredData = fullData.filter(row => 
+        row[2] === taskName && !row[5]
+      );
+      
+      isFiltered = true;
+      currentPage = 1;
+      renderFilteredPage(currentPage);
+      
+      // Показываем кнопку "Показать все задачи"
+      document.getElementById('showAllButton').style.display = 'block';
+    }
+
+    function showAllTasks() {
+      isFiltered = false;
+      currentFilterType = null;
+      currentFilterValue = null;
+      currentPage = 1;
+      renderPage(currentPage);
+      
+      // Скрываем кнопку "Показать все задачи"
+      document.getElementById('showAllButton').style.display = 'none';
+      
+      // Снимаем выделение с выбранной карточки
+      if (selectedRowId) {
+        hideCardButtons(selectedRowId);
+        const selectedCard = document.getElementById(`card-${selectedRowId}`);
+        if (selectedCard) {
+          selectedCard.classList.remove('selected');
+        }
+        selectedRowId = null;
+        selectedRowData = null;
+      }
     }
   </script>
 </body>
