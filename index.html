@@ -266,19 +266,7 @@
       transform: rotate(180deg);
     }
 
-    /* ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ КАРТОЧЕК - ОДИНАКОВАЯ ШИРИНА КАК У КАРТОЧЕК ЗАДАЧ */
-    .mechanics-rating {
-      background-color: #fff;
-      margin: 15px auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      width: 96%;
-      max-width: 500px;
-      padding: 15px;
-      box-sizing: border-box;
-      display: none; /* Скрыто по умолчанию */
-    }
-
+    /* Карточка с открытыми задачами - теперь кликабельная */
     .task-summary-card {
       display: flex;
       justify-content: space-between;
@@ -294,6 +282,141 @@
       width: 96%;
       max-width: 500px;
       box-sizing: border-box;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      min-height: 50px;
+    }
+
+    .task-summary-card:hover {
+      background-color: #f9f9f9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .task-summary-card:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .task-summary-card.expanded {
+      margin-bottom: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom: 2px solid #dc143c;
+    }
+
+    /* Контейнер для фильтра по дате */
+    .date-filter-container {
+      display: none;
+      padding: 16px;
+      background-color: #f8f9fa;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin: 0 auto 15px;
+      width: 96%;
+      max-width: 500px;
+      box-sizing: border-box;
+      flex-direction: column;
+      gap: 12px;
+      border-top: none;
+    }
+
+    .date-filter-container.show {
+      display: flex;
+    }
+
+    .date-filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a2f40;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .date-input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .date-filter-input {
+      padding: 12px 16px;
+      padding-left: 45px;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      background-color: white;
+      color: #1a2f40;
+      cursor: pointer;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      box-sizing: border-box;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+    }
+
+    .date-filter-input:focus {
+      outline: none;
+      border-color: #dc143c;
+    }
+
+    .calendar-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      pointer-events: none;
+      font-size: 16px;
+    }
+
+    .clear-filter-btn {
+      padding: 12px 16px;
+      background-color: #1a2f40;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-filter-btn:hover {
+      background-color: #0d1f2d;
+    }
+
+    /* Счетчик задач в карточке */
+    .task-count {
+      background-color: #dc143c;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    /* ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ КАРТОЧЕК - ОДИНАКОВАЯ ШИРИНА КАК У КАРТОЧЕК ЗАДАЧ */
+    .mechanics-rating {
+      background-color: #fff;
+      margin: 15px auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 96%;
+      max-width: 500px;
+      padding: 15px;
+      box-sizing: border-box;
+      display: none; /* Скрыто по умолчанию */
     }
 
     .winner-section {
@@ -353,17 +476,6 @@
     .winner-name {
       font-weight: 600;
       color: #1a2f40;
-    }
-
-    .task-count {
-      background-color: #dc143c;
-      color: white;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 14px;
-      min-width: 30px;
-      text-align: center;
     }
 
     .winner-count {
@@ -806,6 +918,8 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
   </style>
+  <!-- Подключаем Flatpickr для календаря -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <div id="login">
@@ -841,6 +955,22 @@ SKYMALL
     <div><i class="fas fa-chevron-down"></i></div>
   </div>
 
+  <!-- Карточка с задачами - теперь кликабельная -->
+  <div class="task-summary-card" id="openTasksCard" onclick="toggleDateFilter()" style="display: none;">
+    <div id="task-summary-label">Открытых задач</div>
+    <div class="task-count" id="openTaskCount">0</div>
+  </div>
+
+  <!-- Контейнер для фильтрации по дате -->
+  <div class="date-filter-container" id="date-filter-container">
+    <div class="date-filter-label">Просмотр выполненных задач по дате</div>
+    <div class="date-input-wrapper">
+      <i class="fas fa-calendar-alt calendar-icon"></i>
+      <input type="text" class="date-filter-input" id="date-filter-input" placeholder="Выберите дату" readonly>
+    </div>
+    <button class="clear-filter-btn" id="clear-filter-btn">Сбросить фильтр</button>
+  </div>
+
   <!-- КАРТОЧКИ С ОДИНАКОВОЙ ШИРИНОЙ -->
   <div class="mechanics-rating" id="mechanicsRating">
     <h3><i class="fas fa-trophy"></i> Рейтинг механиков за текущий месяц</h3>
@@ -850,11 +980,6 @@ SKYMALL
   <div class="winner-section" id="winnerSection">
     <h3><i class="fas fa-crown"></i> Победитель прошлого месяца</h3>
     <div id="winnerContent"></div>
-  </div>
-
-  <div class="task-summary-card">
-    <div>Открытых задач</div>
-    <div id="openTaskCount">0</div>
   </div>
 
   <!-- Кнопка "Показать все задачи" -->
@@ -884,6 +1009,8 @@ SKYMALL
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
   <script>
     // ===================== ИСПОЛЬЗОВАНИЕ ССЫЛОК ИЗ КОНСТАНТ =====================
     // Обновляем ссылки на основе констант
@@ -946,6 +1073,10 @@ SKYMALL
     let selectedRowId = null;
     let selectedRowData = null;
     let isRatingVisible = false;
+    let isDateFilterVisible = false;
+    let datePicker = null;
+    let isDateFilterActive = false;
+    let currentFilterDate = '';
 
     document.addEventListener('DOMContentLoaded', function() {
       // Заполняем меню
@@ -961,6 +1092,8 @@ SKYMALL
       document.addEventListener('click', function(e) {
         const siteNameDropdown = document.getElementById('siteNameDropdown');
         const dropdownMenu = document.getElementById('dropdownMenu');
+        const dateFilterContainer = document.getElementById('date-filter-container');
+        const openTasksCard = document.getElementById('openTasksCard');
         
         if (!e.target.closest('.site-name') && siteNameDropdown.style.display === 'block') {
           siteNameDropdown.style.display = 'none';
@@ -969,7 +1102,20 @@ SKYMALL
         if (!e.target.closest('.menu-button') && dropdownMenu.style.display === 'flex') {
           dropdownMenu.style.display = 'none';
         }
+        
+        // Закрываем фильтр дат при клике вне его области
+        if (!e.target.closest('#openTasksCard') && 
+            !e.target.closest('#date-filter-container') && 
+            dateFilterContainer.classList.contains('show')) {
+          toggleDateFilter();
+        }
       });
+      
+      // Инициализируем календарь
+      initDatePicker();
+      
+      // Обработчик для кнопки сброса фильтра
+      document.getElementById('clear-filter-btn').addEventListener('click', clearDateFilter);
     });
 
     function checkAuth() {
@@ -978,6 +1124,7 @@ SKYMALL
         document.getElementById('login').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
         document.getElementById('ratingButton').style.display = 'flex';
+        document.getElementById('openTasksCard').style.display = 'flex';
         loadSheetData();
       } else {
         document.getElementById('login').style.display = 'flex';
@@ -1054,6 +1201,160 @@ SKYMALL
       document.getElementById("loader").style.display = "none";
     }
 
+    function toggleRating() {
+      const ratingButton = document.getElementById('ratingButton');
+      const mechanicsRating = document.getElementById('mechanicsRating');
+      const winnerSection = document.getElementById('winnerSection');
+      
+      isRatingVisible = !isRatingVisible;
+      
+      if (isRatingVisible) {
+        ratingButton.classList.add('expanded');
+        mechanicsRating.style.display = 'block';
+        winnerSection.style.display = 'block';
+      } else {
+        ratingButton.classList.remove('expanded');
+        mechanicsRating.style.display = 'none';
+        winnerSection.style.display = 'none';
+      }
+    }
+
+    function toggleDateFilter() {
+      const openTasksCard = document.getElementById('openTasksCard');
+      const dateFilterContainer = document.getElementById('date-filter-container');
+      
+      isDateFilterVisible = !isDateFilterVisible;
+      
+      if (isDateFilterVisible) {
+        openTasksCard.classList.add('expanded');
+        dateFilterContainer.classList.add('show');
+      } else {
+        openTasksCard.classList.remove('expanded');
+        dateFilterContainer.classList.remove('show');
+        // При закрытии сбрасываем фильтр
+        if (isDateFilterActive) {
+          clearDateFilter();
+        }
+      }
+    }
+
+    function initDatePicker() {
+      const dateInput = document.getElementById('date-filter-input');
+      
+      if (datePicker) {
+        datePicker.destroy();
+      }
+      
+      // Инициализируем календарь
+      datePicker = flatpickr(dateInput, {
+        locale: "ru",
+        dateFormat: "d.m.Y",
+        allowInput: false,
+        clickOpens: true,
+        disableMobile: false,
+        onChange: function(selectedDates, dateStr, instance) {
+          if (dateStr) {
+            const formattedDate = dateStr;
+            filterTasksByDate(formattedDate);
+          }
+        }
+      });
+      
+      // Очищаем поле ввода
+      dateInput.value = '';
+    }
+
+    function filterTasksByDate(date) {
+      if (!date || date === '') {
+        clearDateFilter();
+        return;
+      }
+      
+      // Активируем фильтр по дате
+      isDateFilterActive = true;
+      currentFilterDate = date;
+      
+      // Считаем выполненные задачи за эту дату
+      const completedTasksCount = countCompletedTasksByDate(date);
+      
+      // Обновляем карточку с задачами
+      updateTaskSummaryCard(date, completedTasksCount);
+      
+      // Фильтруем данные: показываем только выполненные задачи за выбранную дату
+      filteredData = fullData.filter(row => {
+        // row[4] - дата выполнения, row[5] - исполнитель
+        return row[4] === date && row[5] && row[5].trim() !== '';
+      });
+      
+      // Сортируем отфильтрованные данные по дате выполнения (новые сверху)
+      filteredData.sort((a, b) => {
+        const dateA = parseDate(a[4]);
+        const dateB = parseDate(b[4]);
+        return dateB - dateA;
+      });
+      
+      // Устанавливаем флаг фильтрации
+      isFiltered = true;
+      currentFilterType = 'date';
+      currentFilterValue = date;
+      
+      // Показываем отфильтрованные данные
+      currentPage = 1;
+      renderFilteredPage(currentPage);
+      
+      // Показываем кнопку "Показать все задачи"
+      document.getElementById('showAllButton').style.display = 'block';
+    }
+
+    function countCompletedTasksByDate(date) {
+      if (!fullData || fullData.length === 0) return 0;
+      
+      return fullData.filter(row => {
+        return row[4] === date && row[5] && row[5].trim() !== '';
+      }).length;
+    }
+
+    function parseDate(dateStr) {
+      if (!dateStr || dateStr === '-') return new Date(0);
+      
+      const parts = dateStr.split('.');
+      if (parts.length !== 3) return new Date(0);
+      
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1;
+      const year = parseInt(parts[2]);
+      
+      return new Date(year, month, day);
+    }
+
+    function clearDateFilter() {
+      isDateFilterActive = false;
+      currentFilterDate = '';
+      
+      // Сбрасываем поле ввода календаря
+      const dateInput = document.getElementById('date-filter-input');
+      if (dateInput) {
+        dateInput.value = '';
+      }
+      
+      // Восстанавливаем карточку с открытыми задачами
+      updateOpenTaskCard(fullData);
+      
+      // Сбрасываем фильтр
+      showAllTasks();
+    }
+
+    function updateOpenTaskCard(data) {
+      const openCount = data.filter(row => !row[5]).length;
+      document.getElementById("openTaskCount").textContent = openCount;
+      document.getElementById("task-summary-label").textContent = "Открытых задач";
+    }
+
+    function updateTaskSummaryCard(date, count) {
+      document.getElementById("openTaskCount").textContent = count;
+      document.getElementById("task-summary-label").textContent = `Выполненные задачи за дату: ${date}`;
+    }
+
     async function loadSheetData() {
       showLoader();
       try {
@@ -1083,24 +1384,6 @@ SKYMALL
         console.error(e);
       } finally {
         hideLoader();
-      }
-    }
-
-    function toggleRating() {
-      const ratingButton = document.getElementById('ratingButton');
-      const mechanicsRating = document.getElementById('mechanicsRating');
-      const winnerSection = document.getElementById('winnerSection');
-      
-      isRatingVisible = !isRatingVisible;
-      
-      if (isRatingVisible) {
-        ratingButton.classList.add('expanded');
-        mechanicsRating.style.display = 'block';
-        winnerSection.style.display = 'block';
-      } else {
-        ratingButton.classList.remove('expanded');
-        mechanicsRating.style.display = 'none';
-        winnerSection.style.display = 'none';
       }
     }
 
@@ -1253,6 +1536,10 @@ SKYMALL
             filteredData = fullData.filter(row => 
               row[2] === currentFilterValue && !row[5]
             );
+          } else if (currentFilterType === 'date') {
+            filteredData = fullData.filter(row => {
+              return row[4] === currentFilterDate && row[5] && row[5].trim() !== '';
+            });
           }
         }
 
@@ -1646,11 +1933,6 @@ SKYMALL
       }
     }
 
-    function updateOpenTaskCard(data) {
-      const openCount = data.filter(row => !row[5]).length;
-      document.getElementById("openTaskCount").textContent = openCount;
-    }
-
     // Функции для работы с фильтрацией из карточек
     function filterByMachineFromCard(rowNumber) {
       const row = fullData.find(r => r[0] === rowNumber);
@@ -1713,6 +1995,11 @@ SKYMALL
         }
         selectedRowId = null;
         selectedRowData = null;
+      }
+      
+      // Сбрасываем фильтр даты если он был активен
+      if (isDateFilterActive) {
+        clearDateFilter();
       }
     }
   </script>
